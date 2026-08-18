@@ -23,14 +23,11 @@ RUN apt-get update && \
     cd /tmp/llvm-project-llvmorg-21.1.8 && \
     cmake -S llvm -B build \
         -G Ninja \
+        -DLLVM_ENABLE_PROJECTS="clang" \
         -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_INSTALL_PREFIX=/opt/llvm-21 \
-        -DLLVM_ENABLE_PROJECTS='clang;openmp' \
-        -DLLVM_ENABLE_RUNTIMES='libcxx;libcxxabi;libunwind' \
-        -DLLVM_TARGETS_TO_BUILD='X86' \
-        -DLLVM_INCLUDE_EXAMPLES=OFF \
-        -DLLVM_INCLUDE_TESTS=OFF \
-        -DLLVM_INCLUDE_BENCHMARKS=OFF \
+        -DLLVM_ENABLE_ASSERTIONS=OFF \
+        -DLLDB_INCLUDE_TESTS=OFF \
+        -DLIBCLC_TARGETS_TO_BUILD="RISCV;X86" \
         -DLLVM_USE_LINKER=mold && \
     cmake --build build -j $(nproc) -- all && \
     cmake --build build -- install && \
