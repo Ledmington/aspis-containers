@@ -17,8 +17,7 @@ RUN apt-get update && \
     # Setup LLVM
     cd /tmp && \
     wget -q https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-21.1.8.tar.gz && \
-    echo "7ba3f2a8d8fda88be18a31d011e8195d3b7f87f9fa92b20c94cba2d7f65b0e3f /tmp/llvmorg-21.1.8.tar.gz" >> /tmp/llvm_hash.txt && \
-    sha256sum --check /tmp/llvm_hash.txt && \
+    echo "7ba3f2a8d8fda88be18a31d011e8195d3b7f87f9fa92b20c94cba2d7f65b0e3f /tmp/llvmorg-21.1.8.tar.gz" | sha256sum -c - && \
     tar xzf /tmp/llvmorg-21.1.8.tar.gz && \
     cd /tmp/llvm-project-llvmorg-21.1.8 && \
     cmake -S llvm -B build \
