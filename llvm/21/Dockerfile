@@ -30,13 +30,7 @@ RUN apt-get update && \
         -DLIBCLC_TARGETS_TO_BUILD="RISCV;X86" \
         -DLLVM_USE_LINKER=mold && \
     cmake --build build -j $(nproc) -- all && \
-    cmake --build build -- install && \
-    # Cleanup
-    cd ${HOME} && \
-    rm -rf /tmp/* && \
-    apt-get remove -y wget git mold && \
-    apt-get autoremove -y && \
-    apt-get clean -y
+    cmake --build build -- install
 
 FROM ubuntu:24.04
 
