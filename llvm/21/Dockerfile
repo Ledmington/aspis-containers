@@ -45,12 +45,14 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
+        git \
         ca-certificates \
         python3 \
         cmake \
         ninja-build \
         ccache \
-        mold && \
+        mold \
+        build-essential && \
     apt-get autoremove -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
