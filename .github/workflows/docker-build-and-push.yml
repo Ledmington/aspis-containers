@@ -1,0 +1,78 @@
+name: Build and push Docker images
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1440  # 24 hours
+
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
+    strategy:
+      matrix:
+        include:
+          - toolchain: llvm
+            version: 21
+
+    env:
+      REGISTRY: docker.io
+      IMAGE_NAME: ledmington/aspis-deps:${{ matrix.toolchain }}${{ matrix.version }}
+
+    steps:
+      - name: Free disk space
+        if: runner.os == 'Linux'
+        run: |
+          df -h
+          sudo apt-get remove -y '^dotnet-.*'
+          sudo apt-get remove -y '^llvm-.*'
+          sudo apt-get remove -y 'php.*'
+          sudo apt-get remove -y '^mongodb-.*'
+          sudo apt-get remove -y '^mysql-.*'
+          sudo apt-get remove -y azure-cli google-cloud-cli google-chrome-stable firefox powershell mono-devel libgl1-mesa-dri
+          sudo apt-get autoremove -y
+          sudo apt-get clean
+          df -h
+          sudo rm -rf /usr/local/lib/android || true
+          sudo rm -rf /usr/share/dotnet || true
+          sudo rm -rf /opt/ghc || true
+          sudo rm -rf /usr/local/.ghcup || true
+          sudo rm -rf /opt/hostedtoolcache/CodeQL || true
+          sudo docker system prune --all --volumes --force
+          sudo apt-get clean
+          sudo rm -rf /var/lib/apt/lists/*
+          df -h
+
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+        with:
+          submodules: recursive
+
+      - name: Build Docker image
+        run: |
+          cd ${GITHUB_WORKSPACE}/${{ matrix.toolchain }}/${{ matrix.version }}
+          docker build -t ${REGISTRY}/${IMAGE_NAME} -f Dockerfile .
+      
+      - name: Log in to the Container registry
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: docker/login-action@v4.6.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ledmington
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Docker image
+        if: ${{ github.ref == 'refs/heads/master' }}
+        id: push
+        run: |
+          docker push ${REGISTRY}/${IMAGE_NAME}
