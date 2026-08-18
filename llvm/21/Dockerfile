@@ -23,14 +23,17 @@ RUN apt-get update && \
     cd /tmp/llvm-project-llvmorg-21.1.8 && \
     cmake -S llvm -B build \
         -G Ninja \
-        -DLLVM_ENABLE_PROJECTS="clang" \
+        -DLLVM_ENABLE_PROJECTS="clang;libclc" \
         -DCMAKE_BUILD_TYPE=Release \
         -DLLVM_ENABLE_ASSERTIONS=OFF \
         -DLLDB_INCLUDE_TESTS=OFF \
-        -DLIBCLC_TARGETS_TO_BUILD="RISCV;X86" \
-        -DLLVM_USE_LINKER=mold && \
+        -DLLVM_TARGETS_TO_BUILD="X86;RISCV" \
+        -DLLVM_BUILD_LLVM_DYLIB=ON \
+        -DLLVM_LINK_LLVM_DYLIB=ON \
+        -DLLVM_USE_LINKER=mold \
+        -DCMAKE_INSTALL_PREFIX=/opt/llvm-21 && \
     cmake --build build -j $(nproc) -- all && \
-    cmake --build build -- install
+    cmake --build build -- install/strip
 
 FROM ubuntu:24.04
 
