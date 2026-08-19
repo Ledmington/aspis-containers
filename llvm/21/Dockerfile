@@ -48,6 +48,7 @@ RUN apt-get update && \
         ca-certificates \
         python3 \
         python3-pip \
+        python3-venv \
         cmake \
         ninja-build \
         ccache \
