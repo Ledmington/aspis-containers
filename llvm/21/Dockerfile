@@ -58,3 +58,6 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /opt/llvm-21 /opt/llvm-21
+
+ENV CC=/opt/llvm-21/bin/clang
+ENV CXX=/opt/llvm-21/bin/clang++
