@@ -52,8 +52,7 @@ RUN apt-get update && \
         cmake \
         ninja-build \
         ccache \
-        mold \
-        build-essential && \
+        mold && \
     apt-get autoremove -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
