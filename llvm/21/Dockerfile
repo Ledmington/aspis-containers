@@ -22,7 +22,7 @@ RUN apt-get update && \
     cd /tmp/llvm-project-llvmorg-21.1.8 && \
     cmake -S llvm -B build \
         -G Ninja \
-        -DLLVM_ENABLE_PROJECTS="clang;libclc" \
+        -DLLVM_ENABLE_PROJECTS="clang;lld;libclc" \
         -DCMAKE_BUILD_TYPE=Release \
         -DLLVM_ENABLE_ASSERTIONS=OFF \
         -DLLVM_INCLUDE_TESTS=OFF \
