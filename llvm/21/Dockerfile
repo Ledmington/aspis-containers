@@ -24,6 +24,7 @@ RUN apt-get update && \
         -G Ninja \
         -DCMAKE_BUILD_TYPE=Release \
         -DLLVM_ENABLE_PROJECTS="clang;lld" \
+        -DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libcxxabi" \
         -DLLVM_TARGETS_TO_BUILD="X86;RISCV" \
         -DLLVM_ENABLE_ASSERTIONS=OFF \
         -DLLVM_ENABLE_BINDINGS=OFF \
