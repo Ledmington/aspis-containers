@@ -47,6 +47,7 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
         git \
+        libc6-dev \
         ca-certificates \
         python3 \
         python3-pip \
