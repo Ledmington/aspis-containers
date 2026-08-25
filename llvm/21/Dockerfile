@@ -35,6 +35,11 @@ RUN apt-get update && \
         -DLLVM_INSTALL_UTILS=ON \
         -DLLVM_BUILD_LLVM_DYLIB=ON \
         -DLLVM_LINK_LLVM_DYLIB=ON \
+        -DLLVM_OPTIMIZED_TABLEGEN=ON \
+        -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
+        -DCLANG_DEFAULT_RTLIB=compiler-rt \
+        -DCLANG_DEFAULT_UNWINDLIB=libunwind \
+        -DCLANG_DEFAULT_LINKER=lld \
         -DCMAKE_INSTALL_PREFIX=/opt/llvm-21 && \
     cmake --build build -j $(nproc) -- all && \
     cmake --build build -- install/strip
@@ -63,3 +68,4 @@ COPY --from=builder /opt/llvm-21 /opt/llvm-21
 ENV CC=/opt/llvm-21/bin/clang
 ENV CXX=/opt/llvm-21/bin/clang++
 ENV PATH="/opt/llvm-21/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/opt/llvm-21/lib/x86_64-unknown-linux-gnu:${LD_LIBRARY_PATH}"
