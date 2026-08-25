@@ -53,6 +53,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         git \
         libc6-dev \
+        libatomic1 \
         ca-certificates \
         python3 \
         python3-pip \
