@@ -11,7 +11,6 @@ RUN apt-get update && \
         g++ \
         cmake \
         ninja-build \
-        mold \
         python3 \
         ca-certificates && \
     # Build LLVM
@@ -36,7 +35,6 @@ RUN apt-get update && \
         -DLLVM_INSTALL_UTILS=ON \
         -DLLVM_BUILD_LLVM_DYLIB=ON \
         -DLLVM_LINK_LLVM_DYLIB=ON \
-        -DLLVM_USE_LINKER=mold \
         -DCMAKE_INSTALL_PREFIX=/opt/llvm-21 && \
     cmake --build build -j $(nproc) -- all && \
     cmake --build build -- install/strip
@@ -49,16 +47,12 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
         git \
-        gcc \
-        g++ \
         ca-certificates \
         python3 \
         python3-pip \
         python3-venv \
         cmake \
-        ninja-build \
-        ccache \
-        mold && \
+        ninja-build && \
     apt-get autoremove -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
