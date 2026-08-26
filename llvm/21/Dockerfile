@@ -7,8 +7,9 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         wget \
         git \
-        gcc \
-        g++ \
+        clang \
+        libc++-dev \
+        libc++abi-dev \
         cmake \
         ninja-build \
         python3 \
@@ -21,6 +22,11 @@ RUN apt-get update && \
     cd /tmp/llvm-project-llvmorg-21.1.8 && \
     cmake -S llvm -B build \
         -G Ninja \
+        -DCMAKE_C_COMPILER=clang \
+        -DCMAKE_CXX_COMPILER=clang++ \
+        -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
+        -DCMAKE_EXE_LINKER_FLAGS="-stdlib=libc++" \
+        -DCMAKE_SHARED_LINKER_FLAGS="-stdlib=libc++" \
         -DCMAKE_BUILD_TYPE=Release \
         -DLLVM_ENABLE_PROJECTS="clang;lld" \
         -DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libcxxabi;libunwind" \
