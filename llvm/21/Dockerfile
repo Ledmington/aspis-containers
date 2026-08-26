@@ -7,11 +7,11 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         wget \
         git \
-        clang \
-        libc++-dev \
-        libc++abi-dev \
+        gcc \
+        g++ \
         cmake \
         ninja-build \
+        mold \
         python3 \
         ca-certificates && \
     # Build LLVM
@@ -22,30 +22,12 @@ RUN apt-get update && \
     cd /tmp/llvm-project-llvmorg-21.1.8 && \
     cmake -S llvm -B build \
         -G Ninja \
-        -DCMAKE_C_COMPILER=clang \
-        -DCMAKE_CXX_COMPILER=clang++ \
-        -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
-        -DCMAKE_EXE_LINKER_FLAGS="-stdlib=libc++" \
-        -DCMAKE_SHARED_LINKER_FLAGS="-stdlib=libc++" \
         -DCMAKE_BUILD_TYPE=Release \
-        -DLLVM_ENABLE_PROJECTS="clang;lld" \
-        -DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libcxxabi;libunwind" \
-        -DLLVM_TARGETS_TO_BUILD="X86;RISCV" \
+        -DLLVM_ENABLE_PROJECTS="clang" \
         -DLLVM_ENABLE_ASSERTIONS=OFF \
-        -DLLVM_ENABLE_BINDINGS=OFF \
-        -DLLVM_ENABLE_RTTI=OFF \
-        -DLLVM_ENABLE_EH=OFF \
-        -DLLVM_INCLUDE_TESTS=OFF \
-        -DLLVM_INCLUDE_EXAMPLES=OFF \
-        -DLLVM_INCLUDE_BENCHMARKS=OFF \
-        -DLLVM_INSTALL_UTILS=ON \
-        -DLLVM_BUILD_LLVM_DYLIB=ON \
-        -DLLVM_LINK_LLVM_DYLIB=ON \
-        -DLLVM_OPTIMIZED_TABLEGEN=ON \
-        -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
-        -DCLANG_DEFAULT_RTLIB=compiler-rt \
-        -DCLANG_DEFAULT_UNWINDLIB=libunwind \
-        -DCLANG_DEFAULT_LINKER=lld \
+        -DLLDB_INCLUDE_TESTS=OFF \
+        -DLIBCLC_TARGETS_TO_BUILD="RISCV;X86" \
+        -DLLVM_USE_LINKER=mold \
         -DCMAKE_INSTALL_PREFIX=/opt/llvm-21 && \
     cmake --build build -j $(nproc) -- all && \
     cmake --build build -- install/strip
@@ -58,7 +40,7 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
         git \
-        libc6-dev \
+        build-essential \
         libatomic1 \
         ca-certificates \
         python3 \
@@ -72,7 +54,4 @@ RUN apt-get update && \
 
 COPY --from=builder /opt/llvm-21 /opt/llvm-21
 
-ENV CC=/opt/llvm-21/bin/clang
-ENV CXX=/opt/llvm-21/bin/clang++
 ENV PATH="/opt/llvm-21/bin:${PATH}"
-ENV LD_LIBRARY_PATH="/opt/llvm-21/lib/x86_64-unknown-linux-gnu:${LD_LIBRARY_PATH}"
