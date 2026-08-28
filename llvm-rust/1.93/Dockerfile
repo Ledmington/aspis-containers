@@ -6,7 +6,6 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
         wget \
-        git \
         gcc \
         g++ \
         cmake \
@@ -32,39 +31,15 @@ RUN apt-get update && \
     cmake --build build -j $(nproc) -- all && \
     cmake --build build -- install/strip
 
-# Builds a rustc from source, linked against the /opt/llvm-21 build above
-# (not a separate LLVM instance bundled in an official rustc release), so
-# ASPIS's Rust front-end and its LLVM-IR-consuming pass pipeline share one
-# real LLVM build end to end.
-#
-# 1.93.0 must stay in sync with ASPIS/rust-toolchain.toml (chosen there to
-# match LLVM 21.1.8).
-RUN git clone --branch 1.93.0 --recurse-submodules --depth 1 --shallow-submodules \
-        https://github.com/rust-lang/rust.git /tmp/rust
+RUN cd /tmp && \
+    wget -q https://static.rust-lang.org/dist/rustc-1.93.0-src.tar.gz && \
+    echo "69112bd83c321943ffc390b7db2f59ef3febb95dac700f67c2156fbf6b50a705 /tmp/rustc-1.93.0-src.tar.gz" | sha256sum -c - && \
+    tar xzf /tmp/rustc-1.93.0-src.tar.gz && \
+    mv /tmp/rustc-1.93.0-src /tmp/rust
 
-# Keys confirmed against bootstrap.example.toml on the rust-lang/rust
-# 1.93.0 tag. llvm-config points bootstrap at our own LLVM build instead of
-# compiling the (unused, since llvm-config is set) src/llvm-project
-# submodule; llvm-has-rust-patches=false because /opt/llvm-21 is built from
-# vanilla llvm.org, not rust-lang/llvm-project.
-RUN cat <<'EOF' > /tmp/rust/bootstrap.toml
-[llvm]
-llvm-config = "/opt/llvm-21/bin/llvm-config"
-llvm-has-rust-patches = false
+COPY bootstrap.toml /tmp/rust/bootstrap.toml
 
-[build]
-target = ["x86_64-unknown-linux-gnu"]
-
-[install]
-prefix = "/opt/rust-llvm21"
-EOF
-
-# Stage 1 is the standard "working, self-hosting-capable compiler" target
-# (rustc-dev-guide's own recommendation short of a full stage-2
-# self-optimizing rebuild): builds rustc + library/std against
-# /opt/llvm-21, and carries along the stage0 bootstrap cargo, which
-# doesn't link LLVM and so doesn't need rebuilding against our copy.
-RUN cd /tmp/rust && python3 x.py install --stage 1
+RUN cd /tmp/rust && ./x install --stage 1
 
 FROM ubuntu:24.04
 
