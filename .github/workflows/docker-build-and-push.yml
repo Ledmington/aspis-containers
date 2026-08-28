@@ -24,6 +24,8 @@ jobs:
         include:
           - toolchain: llvm
             version: 21
+          - toolchain: llvm-rust
+            version: "1.93"
 
     env:
       REGISTRY: docker.io
@@ -62,7 +64,7 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}/${{ matrix.toolchain }}/${{ matrix.version }}
           docker build -t ${REGISTRY}/${IMAGE_NAME} -f Dockerfile .
-      
+
       - name: Log in to the Container registry
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: docker/login-action@v4.6.0
