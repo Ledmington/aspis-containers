@@ -9,7 +9,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
-        wget && \
+        wget \
+        pkg-config \
+        libssl-dev && \
     cd /tmp && \
     wget -q https://static.rust-lang.org/dist/rustc-1.93.0-src.tar.gz && \
     echo "69112bd83c321943ffc390b7db2f59ef3febb95dac700f67c2156fbf6b50a705 /tmp/rustc-1.93.0-src.tar.gz" | sha256sum -c - && \
