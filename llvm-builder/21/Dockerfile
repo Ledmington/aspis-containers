@@ -28,6 +28,7 @@ RUN apt-get update && \
         -DLLDB_INCLUDE_TESTS=OFF \
         -DLIBCLC_TARGETS_TO_BUILD="RISCV;X86" \
         -DLLVM_USE_LINKER=mold \
+        -DLLVM_INSTALL_UTILS=ON \
         -DCMAKE_INSTALL_PREFIX=/opt/llvm-21 && \
     cmake --build build -j $(nproc) -- all && \
     cmake --build build -- install/strip && \
