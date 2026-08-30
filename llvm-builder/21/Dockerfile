@@ -24,7 +24,7 @@ RUN apt-get update && \
         -G Ninja \
         -DCMAKE_BUILD_TYPE=Release \
         -DLLVM_ENABLE_PROJECTS="clang" \
-        -DLLVM_ENABLE_ASSERTIONS=OFF \
+        -DLLVM_ENABLE_ASSERTIONS=ON \
         -DLLDB_INCLUDE_TESTS=OFF \
         -DLIBCLC_TARGETS_TO_BUILD="RISCV;X86" \
         -DLLVM_USE_LINKER=mold \
