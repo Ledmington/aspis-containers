@@ -32,6 +32,10 @@ RUN apt-get update && \
         git \
         build-essential \
         libatomic1 \
+        libedit2 \
+        libncurses6 \
+        liblzma5 \
+        libxml2 \
         ca-certificates \
         python3 \
         python3-pip \

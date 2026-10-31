@@ -13,6 +13,10 @@ RUN apt-get update && \
         ninja-build \
         mold \
         python3 \
+        libedit-dev \
+        libncurses-dev \
+        liblzma-dev \
+        libxml2-dev \
         ca-certificates && \
     # Build LLVM
     cd /tmp && \
@@ -23,9 +27,14 @@ RUN apt-get update && \
     cmake -S llvm -B build \
         -G Ninja \
         -DCMAKE_BUILD_TYPE=Release \
-        -DLLVM_ENABLE_PROJECTS="clang" \
+        -DLLVM_ENABLE_PROJECTS="clang;lldb" \
         -DLLVM_ENABLE_ASSERTIONS=ON \
         -DLLDB_INCLUDE_TESTS=OFF \
+        -DLLDB_ENABLE_PYTHON=OFF \
+        -DLLDB_ENABLE_LIBEDIT=ON \
+        -DLLDB_ENABLE_CURSES=ON \
+        -DLLDB_ENABLE_LZMA=ON \
+        -DLLDB_ENABLE_LIBXML2=ON \
         -DLIBCLC_TARGETS_TO_BUILD="RISCV;X86" \
         -DLLVM_USE_LINKER=mold \
         -DLLVM_INSTALL_UTILS=ON \
