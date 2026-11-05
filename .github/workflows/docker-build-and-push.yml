@@ -106,7 +106,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/master' }}
         run: docker push ${REGISTRY}/${IMAGE_BASE}:llvm21
 
-  build-llvm-rust1.93-image:
+  build-llvm-rust1-93-image:
     needs: build-llvm-builder
     runs-on: ubuntu-latest
     timeout-minutes: 1440  # 24 hours
@@ -174,7 +174,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/master' }}
         run: docker push ${REGISTRY}/${IMAGE_BASE}:llvm-rust1.93
 
-  build-llvm-rust1.99-image:
+  build-llvm-rust1-99-image:
     needs: build-llvm-builder
     runs-on: ubuntu-latest
     timeout-minutes: 1440  # 24 hours
