@@ -14,7 +14,7 @@ RUN apt-get update && \
         libssl-dev && \
     cd /tmp && \
     wget -q https://static.rust-lang.org/dist/rustc-1.99.0-src.tar.gz && \
-    echo "69112bd83c321943ffc390b7db2f59ef3febb95dac700f67c2156fbf6b50a705 /tmp/rustc-1.99.0-src.tar.gz" | sha256sum -c - && \
+    echo "2035e4077b834a42ff8afd07f277ae3f06340098b86b1d2843aa234b4cfcae67 /tmp/rustc-1.99.0-src.tar.gz" | sha256sum -c - && \
     tar xzf /tmp/rustc-1.99.0-src.tar.gz && \
     mv /tmp/rustc-1.99.0-src /tmp/rust
 
